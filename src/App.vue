@@ -1,17 +1,19 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <router-view v-if="!loading" />
 </template>
 
 <script setup>
+  import { ref, onMounted } from "vue";
   import { useStore } from "vuex";
   const store = useStore();
-  if (sessionStorage.getItem("token")) {
-    store.dispatch("refreshLogin");
-  }
+  const loading = ref(true);
+  onMounted(async () => {
+    loading.value = true;
+    console.log("first");
+    await store.dispatch("refreshLogin");
+    loading.value = false;
+  });
+  console.log(store.state.notes);
 </script>
 
 <style>

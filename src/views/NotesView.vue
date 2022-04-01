@@ -1,32 +1,33 @@
-// tests
 <template>
   <div class="pageContainer">
     <router-link to="/" class="noteContainer">
       <i class="fa-solid fa-circle-plus"></i>
     </router-link>
-    <div class="gridContainer">
-      <div
-        v-for="note in store.state.notes"
-        :key="note._id"
-        class="note"
-        :class="note.favourite ? 'favouriteNote' : ''"
-      >
-        <div class="headElement">
-          <h1 class="title">
-            {{ note.title }}
-          </h1>
-          <router-link :to="{ name: 'editNote', params: { id: note._id } }"
-            ><i class="fa-solid fa-pen-to-square"></i
-          ></router-link>
-        </div>
-        <p class="content">
-          {{ note.content }}
-        </p>
-        <div class="updatedAt">
-          Updated:
-          {{ note.updatedAt.split("T")[0] }}
-          at
-          {{ note.updatedAt.split("T")[1].split(".")[0] }}
+    <div class="outerGridContainer">
+      <div class="gridContainer">
+        <div
+          v-for="note in notes"
+          :key="note._id"
+          class="note"
+          :class="note.favourite ? 'favouriteNote' : ''"
+        >
+          <div class="headElement">
+            <h1 class="title">
+              {{ note.title }}
+            </h1>
+            <router-link :to="{ name: 'editNote', params: { id: note._id } }"
+              ><i class="fa-solid fa-pen-to-square"></i
+            ></router-link>
+          </div>
+          <p class="content">
+            {{ note.content }}
+          </p>
+          <div class="updatedAt">
+            Updated:
+            {{ note.updatedAt.split("T")[0] }}
+            at
+            {{ note.updatedAt.split("T")[1].split(".")[0] }}
+          </div>
         </div>
       </div>
     </div>
@@ -39,9 +40,10 @@
   import axios from "axios";
 
   const store = useStore();
-  // if (store.state.loggedIn) {
-  //   store.dispatch("fetchNotes");
-  // }
+  if (store.state.loggedIn) {
+    store.dispatch("fetchNotes");
+  }
+  const notes = ref(store.getters.getNotes);
 </script>
 
 <style scoped>
@@ -75,17 +77,23 @@
     top: 20px;
     color: black;
   }
+
+  .outerGridContainer {
+    width: 100%;
+  }
   .gridContainer {
+    margin: auto;
     padding: 2rem;
-    max-width: 1500px;
+    max-width: 1400px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
-    gap: 1rem;
+    gap: 2rem;
   }
   .note {
     width: 100%;
     min-height: 300px;
+
     overflow: hidden;
     background: lightblue;
     padding: 1rem;
@@ -129,6 +137,14 @@
     font-size: 0.8rem;
   }
 
+  @media screen and (max-width: 1400px) {
+    .gridContainer {
+      width: 100%;
+      min-width: 0px;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   @media screen and (max-width: 1200px) {
     .gridContainer {
       grid-template-columns: 1fr 1fr;
@@ -139,5 +155,5 @@
     .gridContainer {
       grid-template-columns: 1fr;
     }
-  } ;
+  }
 </style>

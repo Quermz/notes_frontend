@@ -8,10 +8,14 @@ export default createStore({
     loggedIn: false,
     email: "",
     jsonToken: "default",
+    editNote: {},
   },
   getters: {
     findNote: (state) => (id) => {
       return state.notes.find((note) => note._id === id);
+    },
+    getNotes: (state) => {
+      return state.notes;
     },
   },
   mutations: {
@@ -61,6 +65,7 @@ export default createStore({
         commit("setLogin", true);
         sessionStorage.setItem("token", loginReturn.data.accessToken);
         sessionStorage.setItem("email", loginReturn.data.user.email);
+
         dispatch("fetchNotes");
         router.push("/notes");
       } catch (err) {
@@ -73,20 +78,16 @@ export default createStore({
           method: "post",
           url: "http://localhost:5000/api/user/reload",
           data: {
-            email: sessionStorage.getItem("email").toString(),
+            email: sessionStorage.getItem("email"),
           },
           headers: {
-            token: sessionStorage.getItem("token").toString(),
+            token: sessionStorage.getItem("token"),
           },
         });
-
-        if (refresh.status === 200) {
-          commit("setToken", sessionStorage.getItem("token"));
-
-          commit("setEmail", sessionStorage.getItem("email"));
-          commit("setLogin", true);
-          dispatch("fetchNotes");
-        }
+        commit("setToken", sessionStorage.getItem("token"));
+        commit("setEmail", sessionStorage.getItem("email"));
+        commit("setLogin", true);
+        await dispatch("fetchNotes");
       } catch (error) {
         router.push("/login");
         console.log(error);
@@ -94,30 +95,45 @@ export default createStore({
       }
     },
 
-    async updateNote({ commit, dispatch }) {
+    async updateNote({ state, dispatch }, updatedNote) {
       try {
-        let refresh = await axios({
-          method: "post",
-          url: "http://localhost:5000/api/user/reload",
+        let updateNote = await axios({
+          method: "put",
+          url: "http://localhost:5000/api/notes/updateNote",
           data: {
-            email: sessionStorage.getItem("email").toString(),
+            noteId: updatedNote._id,
+            email: state.email,
+            title: updatedNote.title,
+            content: updatedNote.content,
+            favourite: updatedNote.favourite,
           },
           headers: {
-            token: sessionStorage.getItem("token").toString(),
+            token: state.jsonToken,
           },
         });
-
-        if (refresh.status === 200) {
-          commit("setToken", sessionStorage.getItem("token"));
-
-          commit("setEmail", sessionStorage.getItem("email"));
-          commit("setLogin", true);
-          dispatch("fetchNotes");
-        }
+        await dispatch("fetchNotes");
+        router.push("/notes");
       } catch (error) {
-        router.push("/login");
         console.log(error);
-        sessionStorage.clear();
+      }
+    },
+    async deleteNote({ state, dispatch }, deletedNote) {
+      try {
+        let deleteNote = await axios({
+          method: "put",
+          url: "http://localhost:5000/api/notes/deleteNote",
+          data: {
+            noteId: deletedNote._id,
+            email: state.email,
+          },
+          headers: {
+            token: state.jsonToken,
+          },
+        });
+        await dispatch("fetchNotes");
+        router.push("/notes");
+      } catch (error) {
+        console.log(error);
       }
     },
   },

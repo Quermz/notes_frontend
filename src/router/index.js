@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+
 import NotesView from "@/views/NotesView.vue";
 import LoginView from "@/views/LoginView.vue";
 import EditNote from "@/views/EditNote.vue";
@@ -21,7 +21,7 @@ const routes = [
     component: EditNote,
   },
 ];
-// history: createWebHashHistory(),
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
