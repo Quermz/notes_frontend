@@ -1,6 +1,6 @@
 <template>
   <div class="pageContainer">
-    <router-link to="/" class="noteContainer">
+    <router-link to="/createNote" class="noteContainer">
       <i class="fa-solid fa-circle-plus"></i>
     </router-link>
     <div class="outerGridContainer">

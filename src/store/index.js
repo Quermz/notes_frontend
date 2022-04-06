@@ -136,5 +136,25 @@ export default createStore({
         console.log(error);
       }
     },
+    async createNote({ state }, newNote) {
+      try {
+        let createdNote = await axios({
+          method: "post",
+          url: "http://localhost:5000/api/notes/createNote",
+          data: {
+            email: state.email,
+            title: newNote.title,
+            content: newNote.content,
+            favourite: newNote.favourite,
+          },
+          headers: {
+            token: state.jsonToken,
+          },
+        });
+        router.push("/notes");
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 });
