@@ -26,7 +26,6 @@
   const store = useStore();
   const router = useRoute();
   const note = ref(store.getters.findNote(router.params.id));
-  console.log("then");
 
   function updateNote() {
     store.dispatch("updateNote", note.value);
@@ -41,7 +40,7 @@
     resize: none;
   }
   .innerContainer {
-    max-width: 400px;
+    max-width: 600px;
     margin: auto;
     display: flex;
     flex-direction: column;
