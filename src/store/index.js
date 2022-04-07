@@ -9,6 +9,8 @@ export default createStore({
     email: "",
     jsonToken: "default",
     editNote: {},
+    passwordError: false,
+    creationError: false,
   },
   getters: {
     findNote: (state) => (id) => {
@@ -28,8 +30,14 @@ export default createStore({
     setEmail(state, email) {
       state.email = email;
     },
-    setLogin(state, email) {
+    setLogin(state) {
       state.loggedIn = true;
+    },
+    setPasswordError(state, swap) {
+      state.passwordError = swap;
+    },
+    setCreationError(state) {
+      state.creationError = swap;
     },
   },
   actions: {
@@ -45,6 +53,7 @@ export default createStore({
             token: state.jsonToken,
           },
         });
+
         commit("setNotes", returnNotes.data);
       } catch (err) {
         console.log(err);
@@ -65,11 +74,31 @@ export default createStore({
         commit("setLogin", true);
         sessionStorage.setItem("token", loginReturn.data.accessToken);
         sessionStorage.setItem("email", loginReturn.data.user.email);
-
-        dispatch("fetchNotes");
+        await dispatch("fetchNotes");
         router.push("/notes");
       } catch (err) {
         console.log(err);
+      }
+    },
+    async createAccount({ commit }, accountData) {
+      commit("setPasswordError", false);
+      commit("setCreationError", false);
+      try {
+        let newAccount = await axios({
+          method: "post",
+          url: "http://localhost:5000/api/user/register",
+          data: {
+            email: accountData.email,
+            password: accountData.password,
+            confirmPassword: accountData.confirmPassword,
+          },
+        });
+      } catch (error) {
+        if (error.response.status == 401) {
+          commit("setPasswordError", true);
+        } else if (error.response.status == 500) {
+          commit("setCreationError", true);
+        }
       }
     },
     async refreshLogin({ commit, dispatch }) {
@@ -136,7 +165,7 @@ export default createStore({
         console.log(error);
       }
     },
-    async createNote({ state }, newNote) {
+    async createNote({ state, dispatch }, newNote) {
       try {
         let createdNote = await axios({
           method: "post",
@@ -151,6 +180,7 @@ export default createStore({
             token: state.jsonToken,
           },
         });
+        await dispatch("fetchNotes");
         router.push("/notes");
       } catch (error) {
         console.log(error);

@@ -11,17 +11,19 @@
           class="note"
           :class="note.favourite ? 'favouriteNote' : ''"
         >
-          <div class="headElement">
-            <h1 class="title">
-              {{ note.title }}
-            </h1>
-            <router-link :to="{ name: 'editNote', params: { id: note._id } }"
-              ><i class="fa-solid fa-pen-to-square"></i
-            ></router-link>
+          <div class="innerNoteContainer">
+            <div class="headElement">
+              <h1 class="title">
+                {{ note.title }}
+              </h1>
+              <router-link :to="{ name: 'editNote', params: { id: note._id } }"
+                ><i class="fa-solid fa-pen-to-square"></i
+              ></router-link>
+            </div>
+            <p class="content">
+              {{ note.content }}
+            </p>
           </div>
-          <p class="content">
-            {{ note.content }}
-          </p>
           <div class="updatedAt">
             Updated:
             {{ note.updatedAt.split("T")[0] }}
@@ -38,12 +40,13 @@
   import { ref } from "vue";
   import { useStore } from "vuex";
   import axios from "axios";
+  import router from "@/router";
 
   const store = useStore();
-  if (store.state.loggedIn) {
-    store.dispatch("fetchNotes");
-  }
   const notes = ref(store.getters.getNotes);
+  if (!store.state.loggedIn) {
+    router.push("/");
+  }
 </script>
 
 <style scoped>
@@ -99,8 +102,12 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
+    align-items: space-around;
+    justify-content: space-between;
   }
 
+  .innerNoteContainer {
+  }
   .favouriteNote {
     border: 1px solid black;
     background: lightyellow;
@@ -111,7 +118,8 @@
   }
   .title {
     font-size: 24px;
-    background: none;
+
+    height: 2rem;
     border: none;
     width: 100%;
     overflow-wrap: break-word;

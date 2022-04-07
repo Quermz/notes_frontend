@@ -5,12 +5,15 @@
 <script setup>
   import { ref, onMounted } from "vue";
   import { useStore } from "vuex";
+  import router from "@/router";
   const store = useStore();
   const loading = ref(true);
   onMounted(async () => {
+    console.log("this");
     loading.value = true;
-    console.log("first");
-    await store.dispatch("refreshLogin");
+    if (sessionStorage.getItem("email")) {
+      await store.dispatch("refreshLogin");
+    }
     loading.value = false;
   });
   console.log(store.state.notes);

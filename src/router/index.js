@@ -4,8 +4,11 @@ import NotesView from "@/views/NotesView.vue";
 import LoginView from "@/views/LoginView.vue";
 import EditNote from "@/views/EditNote.vue";
 import CreateNote from "@/views/CreateNote.vue";
+import CreateAccount from "@/views/CreateAccount.vue";
+import HomeView from "../views/HomeView";
 
 const routes = [
+  { path: "/", name: "home", component: HomeView },
   {
     path: "/notes",
     name: "notes",
@@ -16,6 +19,7 @@ const routes = [
     name: "login",
     component: LoginView,
   },
+  { path: "/createAccount", name: "createAccount", component: CreateAccount },
   {
     path: "/editNote/:id",
     name: "editNote",
