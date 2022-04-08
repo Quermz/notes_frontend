@@ -1,5 +1,13 @@
 <template>
   <div class="pageContainer">
+    <div class="header">
+      <div class="">{{ store.state.notes.length }} Notes</div>
+      <div>{{ store.state.email }}</div>
+      <button @click="logout">Log Out</button>
+    </div>
+    <div class="noNotes" v-if="noNotes">
+      You currently have no notes. To get started press the add symbol.
+    </div>
     <router-link to="/createNote" class="noteContainer">
       <i class="fa-solid fa-circle-plus"></i>
     </router-link>
@@ -37,15 +45,23 @@
 </template>
 
 <script setup>
-  import { ref } from "vue";
+  import { ref, computed } from "vue";
   import { useStore } from "vuex";
   import axios from "axios";
   import router from "@/router";
 
   const store = useStore();
   const notes = ref(store.getters.getNotes);
+  const noNotes = computed(() => {
+    if (store.state.notes.length == 0) {
+      return true;
+    }
+  });
   if (!store.state.loggedIn) {
     router.push("/");
+  }
+  function logout() {
+    store.dispatch("logout");
   }
 </script>
 
@@ -56,6 +72,11 @@
     align-items: center;
   }
 
+  .header {
+    display: flex;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
   .noteContainer {
     border-radius: 1rem;
     justify-content: center;
@@ -86,7 +107,7 @@
   }
   .gridContainer {
     margin: auto;
-    padding: 2rem;
+    padding: 1rem 2rem 2rem 2rem;
     max-width: 1400px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -94,10 +115,12 @@
     gap: 2rem;
   }
   .note {
+    border-radius: 15px 0px 0px 0px;
     width: 100%;
     min-height: 300px;
-
+    max-width: 400px;
     overflow: hidden;
+    justify-self: center;
     background: lightblue;
     padding: 1rem;
     display: flex;
@@ -107,6 +130,8 @@
   }
 
   .innerNoteContainer {
+    display: flex;
+    flex-direction: column;
   }
   .favouriteNote {
     border: 1px solid black;
@@ -135,6 +160,7 @@
     border: none;
     overflow-wrap: break-word;
     resize: none;
+    font-family: "Spectral", serif;
   }
 
   .updatedAt {
@@ -145,21 +171,15 @@
     font-size: 0.8rem;
   }
 
-  @media screen and (max-width: 1400px) {
+  @media screen and (max-width: 1300px) {
     .gridContainer {
-      width: 100%;
-      min-width: 0px;
+      max-width: 950px;
+
       grid-template-columns: 1fr 1fr;
     }
   }
 
-  @media screen and (max-width: 1200px) {
-    .gridContainer {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 840px) {
     .gridContainer {
       grid-template-columns: 1fr;
     }

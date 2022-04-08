@@ -24,7 +24,7 @@
     box-sizing: border-box;
     margin: 0px;
     padding: 0px;
-    font-family: "Comfortaa", cursive;
+    font-family: "Karla", sans-serif;
     color: black;
     text-decoration: none; /* no underline */
   }

@@ -11,6 +11,7 @@ export default createStore({
     editNote: {},
     passwordError: false,
     creationError: false,
+    loginError: false,
   },
   getters: {
     findNote: (state) => (id) => {
@@ -30,14 +31,17 @@ export default createStore({
     setEmail(state, email) {
       state.email = email;
     },
-    setLogin(state) {
-      state.loggedIn = true;
+    setLogin(state, swap) {
+      state.loggedIn = swap;
     },
     setPasswordError(state, swap) {
       state.passwordError = swap;
     },
-    setCreationError(state) {
+    setCreationError(state, swap) {
       state.creationError = swap;
+    },
+    setLoginError(state, swap) {
+      state.loginError = swap;
     },
   },
   actions: {
@@ -60,6 +64,7 @@ export default createStore({
       }
     },
     async login({ commit, dispatch }, loginData) {
+      commit("setLoginError", false);
       try {
         let loginReturn = await axios({
           method: "post",
@@ -77,8 +82,16 @@ export default createStore({
         await dispatch("fetchNotes");
         router.push("/notes");
       } catch (err) {
-        console.log(err);
+        commit("setLoginError", true);
       }
+    },
+    logout({ commit }) {
+      sessionStorage.clear();
+      commit("setToken", "");
+      commit("setEmail", "");
+      commit("setLogin", false);
+      commit("setNotes", []);
+      router.push("/");
     },
     async createAccount({ commit }, accountData) {
       commit("setPasswordError", false);

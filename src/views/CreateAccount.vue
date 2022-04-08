@@ -1,12 +1,28 @@
 <template>
-  <div>
-    <input type="email" v-model="email" />
-    <input type="password" v-model="password" />
-    <input type="password" v-model="confirmPassword" />
-    <button @click="createAccount()">Submit</button>
-    <div class="passwordError" v-if="passwordError">Password Issue!</div>
-    <div class="createError" v-if="createdError">
-      Error creating an account!
+  <div class="loginOuterContainer">
+    <div class="loginContainer">
+      <div class="loginHeader">
+        <h1>co Notes</h1>
+        <i class="fa-solid fa-square-pen"></i>
+      </div>
+      <h4>Create Account</h4>
+      <label for="" class="loginLabel">Email</label>
+      <input type="email" v-model="email" class="loginBox" />
+      <label for="" class="loginLabel">Password</label>
+      <input type="password" v-model="password" class="loginBox" />
+      <label for="" class="loginLabel">Confirm Password</label>
+      <input type="password" v-model="confirmPassword" class="loginBox" />
+      <div class="passwordError" v-if="passwordError">
+        Issue With Passwords!
+      </div>
+      <div class="createError" v-if="createdError">
+        Error creating an account!
+      </div>
+      <button @click="createAccount()" class="loginButton">Submit</button>
+      <div class="loginLine"></div>
+      <router-link to="/login" class="loginLink"
+        ><div>Already have an account?</div></router-link
+      >
     </div>
   </div>
 </template>
