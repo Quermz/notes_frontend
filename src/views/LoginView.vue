@@ -5,13 +5,14 @@
         <h1>co Notes</h1>
         <i class="fa-solid fa-square-pen"></i>
       </div>
+      <h3 v-if="accountCreated">Account Created!</h3>
       <h4>Log In</h4>
       <label class="loginLabel">Email Address</label>
       <input class="loginBox" type="text" v-model="email" />
       <label class="loginLabel">Password</label>
       <input class="loginBox" type="password" v-model="password" />
+      <div class="loginError" v-if="loginError">Details not recognised!</div>
       <button class="loginButton" @click="login()">Submit</button>
-      <div class="loginError" v-if="loginError">Details not recognised</div>
       <div class="loginLine"></div>
       <router-link to="/createAccount" class="loginLink"
         ><div>Haven't got an account?</div></router-link
@@ -26,6 +27,10 @@
   import router from "@/router";
   const loginError = computed(() => {
     return store.state.loginError;
+  });
+
+  const accountCreated = computed(() => {
+    return store.state.accountCreated;
   });
   const store = useStore();
   let email = ref();
@@ -55,7 +60,8 @@
     justify-content: center;
     gap: 1rem;
     min-height: 300px;
-    min-width: 500px;
+    width: 500px;
+    margin-top: 1rem;
   }
 
   .loginContainer > * {
@@ -107,5 +113,17 @@
 
   .loginButton:hover {
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 600px) {
+    .loginContainer {
+      max-width: 100%;
+      border: none;
+      padding: 0.3rem;
+    }
+
+    .loginContainer > * {
+      max-width: 100%;
+    }
   }
 </style>

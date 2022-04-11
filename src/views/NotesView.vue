@@ -3,7 +3,7 @@
     <div class="header">
       <div class="">{{ store.state.notes.length }} Notes</div>
       <div>{{ store.state.email }}</div>
-      <button @click="logout">Log Out</button>
+      <button @click="logout" class="logoutButton">Log Out</button>
     </div>
     <div class="noNotes" v-if="noNotes">
       You currently have no notes. To get started press the add symbol.
@@ -76,6 +76,21 @@
     display: flex;
     margin-top: 1rem;
     gap: 1rem;
+  }
+
+  .noNotes {
+    text-align: center;
+  }
+
+  .logoutButton {
+    font-size: 1rem;
+    font-weight: bold;
+    background: none;
+    border: none;
+  }
+
+  .logoutButton:hover {
+    cursor: pointer;
   }
   .noteContainer {
     border-radius: 1rem;
@@ -160,7 +175,6 @@
     border: none;
     overflow-wrap: break-word;
     resize: none;
-    font-family: "Spectral", serif;
   }
 
   .updatedAt {

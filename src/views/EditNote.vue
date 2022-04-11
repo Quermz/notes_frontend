@@ -1,19 +1,27 @@
 <template>
-  <div class="pageContainer">
-    <div class="innerContainer">
+  <div class="createPageContainer">
+    <div class="createInnerContainer">
       <h2>Edit Note</h2>
       <h4>Title</h4>
-      <textarea v-model="note.title" maxlength="20" class="titleBox"></textarea>
+      <textarea
+        v-model="note.title"
+        maxlength="20"
+        class="createTitleBox"
+      ></textarea>
       <h4>Content</h4>
       <textarea
         v-model="note.content"
         maxlength="400"
-        class="contentBox"
+        class="createContentBox"
       ></textarea>
-      <h4>Favourite</h4>
-      <input type="checkbox" v-model="note.favourite" />
-      <button @click="updateNote">Update Note</button>
-      <button @click="deleteNote">Delete</button>
+      <div class="createFavouriteContainer">
+        <h4>Favourite</h4>
+        <input type="checkbox" v-model="note.favourite" />
+      </div>
+      <button @click="updateNote" class="createButtons">Update Note</button>
+      <button @click="deleteNote" class="createButtons">Delete</button>
+      <h3 v-if="deleteNoteError">Error deleting note!</h3>
+      <h3 v-if="updateNoteError">Error updating note!</h3>
     </div>
   </div>
 </template>
@@ -21,8 +29,14 @@
 <script setup>
   import axios from "axios";
   import { useRoute } from "vue-router";
-  import { ref, onUpdated, computed } from "vue";
+  import { ref, computed } from "vue";
   import { useStore } from "vuex";
+  const updateNoteError = computed(() => {
+    return store.state.updateNoteError;
+  });
+  const deleteNoteError = computed(() => {
+    return store.state.deleteNoteError;
+  });
   const store = useStore();
   const router = useRoute();
   const note = ref(store.getters.findNote(router.params.id));
@@ -35,31 +49,4 @@
   }
 </script>
 
-<style scoped>
-  textarea {
-    resize: none;
-  }
-  .innerContainer {
-    max-width: 600px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .innerContainer > * {
-    width: 100%;
-  }
-
-  .titleBox {
-    min-height: 2rem;
-  }
-
-  .contentBox {
-    min-height: 10rem;
-  }
-
-  button {
-    height: 2rem;
-  }
-</style>
+<style scoped></style>

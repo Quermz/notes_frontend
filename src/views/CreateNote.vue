@@ -1,32 +1,48 @@
 <template>
-  <div class="pageContainer">
-    <div class="innerContainer">
+  <div class="createPageContainer">
+    <div class="createInnerContainer">
       <h2>Create Note</h2>
       <h4>Title</h4>
       <textarea
-        class="titleBox"
+        class="createTitleBox"
         maxlength="20"
         v-model="newNote.title"
       ></textarea>
       <h4>Content</h4>
       <textarea
-        class="contentBox"
+        class="createContentBox"
+        :class="{ createContentRequired: createContentRequired }"
         maxlength="400"
         v-model="newNote.content"
       ></textarea>
-      <h4>Favourite</h4>
-      <input type="checkbox" v-model="newNote.favourite" />
-      <button @click="createNote">Create Note</button>
-      <router-link to="/notes" class="delete">
-        <button>Discard</button></router-link
-      >
+      <div class="createContentRequiredText" v-if="createContentRequired">
+        Content is required to create note!
+      </div>
+      <div class="createFavouriteContainer">
+        <h4>Favourite</h4>
+        <input type="checkbox" v-model="newNote.favourite" />
+      </div>
+      <button @click="createNote" class="createButtons">Create Note</button>
+
+      <button class="createButtons">
+        <router-link to="/notes" class="delete">Discard</router-link>
+      </button>
+      <h3 class="createErrorText" v-if="createError">
+        Server error creating note!
+      </h3>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref } from "vue";
+  import { ref, computed } from "vue";
   import { useStore } from "vuex";
+  const createContentRequired = computed(() => {
+    return store.state.createContentRequired;
+  });
+  const createError = computed(() => {
+    return store.state.createError;
+  });
   const store = useStore();
   const newNote = ref({ title: "", favourite: false, content: "" });
   function createNote() {
@@ -34,35 +50,73 @@
   }
 </script>
 
-<style scoped>
+<style>
   textarea {
-    resize: none;
   }
-  .innerContainer {
-    max-width: 600px;
-    margin: auto;
+  .createPageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .createInnerContainer {
+    margin-top: 1rem;
+    max-width: 500px;
+    width: 100%;
+    gap: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
   .innerContainer > * {
-    width: 100%;
   }
 
-  .titleBox {
-    min-height: 2rem;
-  }
-
-  .contentBox {
-    min-height: 10rem;
-  }
-
-  button {
+  .createButtons {
     height: 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    background: none;
+    border: none;
+    border-bottom: 1px solid black;
   }
 
-  .delete > * {
+  .createButtons:hover {
+    cursor: pointer;
+  }
+
+  .createTitleBox {
+    padding: 0.5rem;
     width: 100%;
+    min-height: 2rem;
+    resize: none;
+  }
+
+  .createContentBox {
+    padding: 0.5rem;
+    width: 100%;
+    min-height: 10rem;
+    resize: none;
+  }
+
+  .createContentRequired {
+    border: 1px solid #c93434;
+  }
+
+  .createFavouriteContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  @media screen and (max-width: 600px) {
+    .createInnerContainer {
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    .createButtons {
+      max-width: 250px;
+    }
   }
 </style>

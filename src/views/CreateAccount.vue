@@ -13,11 +13,12 @@
       <label for="" class="loginLabel">Confirm Password</label>
       <input type="password" v-model="confirmPassword" class="loginBox" />
       <div class="passwordError" v-if="passwordError">
-        Issue With Passwords!
+        Passwords dont match!
       </div>
       <div class="createError" v-if="createdError">
         Error creating an account!
       </div>
+      <div class="emailError" v-if="emailCreationError">Invalid Email!</div>
       <button @click="createAccount()" class="loginButton">Submit</button>
       <div class="loginLine"></div>
       <router-link to="/login" class="loginLink"
@@ -41,12 +42,18 @@
   const createdError = computed(() => {
     return store.state.creationError;
   });
+  const emailCreationError = computed(() => {
+    return store.state.emailCreationError;
+  });
   function createAccount() {
     store.dispatch("createAccount", {
       password: password.value,
       email: email.value,
       confirmPassword: confirmPassword.value,
     });
+  }
+  if (store.state.loggedIn) {
+    router.push("/notes");
   }
 </script>
 

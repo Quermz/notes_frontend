@@ -11,7 +11,13 @@ export default createStore({
     editNote: {},
     passwordError: false,
     creationError: false,
+    emailCreationError: false,
     loginError: false,
+    accountCreated: false,
+    createContentRequired: false,
+    createError: false,
+    deleteNoteError: false,
+    updateNoteError: false,
   },
   getters: {
     findNote: (state) => (id) => {
@@ -40,8 +46,26 @@ export default createStore({
     setCreationError(state, swap) {
       state.creationError = swap;
     },
+    setEmailCreationError(state, swap) {
+      state.emailCreationError = swap;
+    },
     setLoginError(state, swap) {
       state.loginError = swap;
+    },
+    setAccountCreation(state, swap) {
+      state.accountCreated = swap;
+    },
+    setCreateContentRequired(state, swap) {
+      state.createContentRequired = swap;
+    },
+    setCreateError(state, swap) {
+      state.createError = swap;
+    },
+    setDeleteError(state, swap) {
+      state.deleteNoteError = swap;
+    },
+    setUpdateError(state, swap) {
+      state.updateNoteError = swap;
     },
   },
   actions: {
@@ -96,6 +120,7 @@ export default createStore({
     async createAccount({ commit }, accountData) {
       commit("setPasswordError", false);
       commit("setCreationError", false);
+      commit("setEmailCreationError", false);
       try {
         let newAccount = await axios({
           method: "post",
@@ -106,11 +131,15 @@ export default createStore({
             confirmPassword: accountData.confirmPassword,
           },
         });
+        commit("setAccountCreation", true);
+        router.push("/login");
       } catch (error) {
         if (error.response.status == 401) {
           commit("setPasswordError", true);
         } else if (error.response.status == 500) {
           commit("setCreationError", true);
+        } else if (error.response.status == 400) {
+          commit("setEmailCreationError", true);
         }
       }
     },
@@ -137,7 +166,8 @@ export default createStore({
       }
     },
 
-    async updateNote({ state, dispatch }, updatedNote) {
+    async updateNote({ state, commit, dispatch }, updatedNote) {
+      commit("setUpdateError", false);
       try {
         let updateNote = await axios({
           method: "put",
@@ -156,10 +186,11 @@ export default createStore({
         await dispatch("fetchNotes");
         router.push("/notes");
       } catch (error) {
+        commit("setUpdateError", true);
         console.log(error);
       }
     },
-    async deleteNote({ state, dispatch }, deletedNote) {
+    async deleteNote({ commit, state, dispatch }, deletedNote) {
       try {
         let deleteNote = await axios({
           method: "put",
@@ -175,28 +206,38 @@ export default createStore({
         await dispatch("fetchNotes");
         router.push("/notes");
       } catch (error) {
+        commit("setDeleteError", true);
         console.log(error);
       }
     },
-    async createNote({ state, dispatch }, newNote) {
-      try {
-        let createdNote = await axios({
-          method: "post",
-          url: "http://localhost:5000/api/notes/createNote",
-          data: {
-            email: state.email,
-            title: newNote.title,
-            content: newNote.content,
-            favourite: newNote.favourite,
-          },
-          headers: {
-            token: state.jsonToken,
-          },
-        });
-        await dispatch("fetchNotes");
-        router.push("/notes");
-      } catch (error) {
-        console.log(error);
+    async createNote({ commit, state, dispatch }, newNote) {
+      if (newNote.content.length == 0) {
+        commit("setCreateContentRequired", true);
+      }
+      if (newNote.content.length > 0) {
+        try {
+          let createdNote = await axios({
+            method: "post",
+            url: "http://localhost:5000/api/notes/createNote",
+            data: {
+              email: state.email,
+              title: newNote.title,
+              content: newNote.content,
+              favourite: newNote.favourite,
+            },
+            headers: {
+              token: state.jsonToken,
+            },
+          });
+
+          commit("setCreateError", false);
+          commit("setCreateContentRequired", false);
+          await dispatch("fetchNotes");
+          router.push("/notes");
+        } catch (error) {
+          commit("setCreateError", true);
+          console.log(error);
+        }
       }
     },
   },

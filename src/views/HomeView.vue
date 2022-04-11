@@ -129,22 +129,23 @@
 
   @media screen and (max-width: 480px) {
     .home {
-      flex-direction: column;
+      padding: 1rem;
     }
-
+    .home > * {
+      max-width: 100%;
+    }
     h1 {
       font-size: 2.5rem;
+      white-space: nowrap;
     }
     .fa-square-pen {
       font-size: 2.5rem;
+
+      margin-right: 1.5rem;
     }
 
     button {
       font-size: 1.3rem;
-    }
-
-    .rightContainer {
-      border: none;
     }
   }
 </style>
