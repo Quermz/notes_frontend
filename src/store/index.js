@@ -73,7 +73,7 @@ export default createStore({
       try {
         let returnNotes = await axios({
           method: "put",
-          url: "http://localhost:5000/api/notes/getNotes",
+          url: "https://conotesbackend.herokuapp.com/api/notes/getNotes",
           data: {
             email: state.email,
           },
@@ -92,7 +92,7 @@ export default createStore({
       try {
         let loginReturn = await axios({
           method: "post",
-          url: "http://localhost:5000/api/user/login",
+          url: "https://conotesbackend.herokuapp.com/api/user/login",
           data: {
             email: loginData.email,
             password: loginData.password,
@@ -124,7 +124,7 @@ export default createStore({
       try {
         let newAccount = await axios({
           method: "post",
-          url: "http://localhost:5000/api/user/register",
+          url: "https://conotesbackend.herokuapp.com/api/user/register",
           data: {
             email: accountData.email,
             password: accountData.password,
@@ -147,7 +147,7 @@ export default createStore({
       try {
         let refresh = await axios({
           method: "post",
-          url: "http://localhost:5000/api/user/reload",
+          url: "https://conotesbackend.herokuapp.com/api/user/reload",
           data: {
             email: sessionStorage.getItem("email"),
           },
@@ -171,7 +171,7 @@ export default createStore({
       try {
         let updateNote = await axios({
           method: "put",
-          url: "http://localhost:5000/api/notes/updateNote",
+          url: "https://conotesbackend.herokuapp.com/api/notes/updateNote",
           data: {
             noteId: updatedNote._id,
             email: state.email,
@@ -194,7 +194,7 @@ export default createStore({
       try {
         let deleteNote = await axios({
           method: "put",
-          url: "http://localhost:5000/api/notes/deleteNote",
+          url: "https://conotesbackend.herokuapp.com/api/notes/deleteNote",
           data: {
             noteId: deletedNote._id,
             email: state.email,
@@ -218,7 +218,7 @@ export default createStore({
         try {
           let createdNote = await axios({
             method: "post",
-            url: "http://localhost:5000/api/notes/createNote",
+            url: "https://conotesbackend.herokuapp.com/api/notes/createNote",
             data: {
               email: state.email,
               title: newNote.title,
