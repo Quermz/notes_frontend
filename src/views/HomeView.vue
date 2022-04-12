@@ -105,6 +105,10 @@
   @media screen and (max-width: 800px) {
     .home {
       flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 0px;
+      margin-top: 1rem;
     }
 
     .leftContainer {
@@ -129,23 +133,31 @@
 
   @media screen and (max-width: 480px) {
     .home {
-      padding: 1rem;
+      gap: 0px;
+      padding: 5vw;
     }
     .home > * {
-      max-width: 100%;
+      width: 80%;
     }
     h1 {
-      font-size: 2.5rem;
+      font-size: 16vw;
       white-space: nowrap;
     }
     .fa-square-pen {
-      font-size: 2.5rem;
+      font-size: 16vw;
 
-      margin-right: 1.5rem;
+      margin-right: 8vw;
     }
 
     button {
-      font-size: 1.3rem;
+      font-size: 8vw;
+    }
+    .rightContainer {
+      border-left: 0px;
+      border: none;
+      border-top: none;
+
+      padding: 0px;
     }
   }
 </style>
