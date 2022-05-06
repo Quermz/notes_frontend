@@ -2,6 +2,8 @@ import { createStore } from "vuex";
 import axios from "axios";
 import router from "@/router";
 
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+
 export default createStore({
   state: {
     notes: [],
@@ -25,6 +27,9 @@ export default createStore({
     },
     getNotes: (state) => {
       return state.notes;
+    },
+    getContentRequire: (state) => {
+      return state.createContentRequired;
     },
   },
   mutations: {
@@ -72,13 +77,11 @@ export default createStore({
     async fetchNotes({ state, commit }) {
       try {
         let returnNotes = await axios({
-          method: "put",
-          url: "https://conotesbackend.herokuapp.com/api/notes/getNotes",
-          data: {
-            email: state.email,
-          },
+          method: "get",
+          url: "notes/getNotes",
           headers: {
             token: state.jsonToken,
+            email: state.email,
           },
         });
 
@@ -92,8 +95,8 @@ export default createStore({
       try {
         let loginReturn = await axios({
           method: "post",
-          url: "https://conotesbackend.herokuapp.com/api/user/login",
-          data: {
+          url: "user/login",
+          headers: {
             email: loginData.email,
             password: loginData.password,
           },
@@ -124,7 +127,7 @@ export default createStore({
       try {
         let newAccount = await axios({
           method: "post",
-          url: "https://conotesbackend.herokuapp.com/api/user/register",
+          url: "user/register",
           data: {
             email: accountData.email,
             password: accountData.password,
@@ -147,12 +150,10 @@ export default createStore({
       try {
         let refresh = await axios({
           method: "post",
-          url: "https://conotesbackend.herokuapp.com/api/user/reload",
-          data: {
-            email: sessionStorage.getItem("email"),
-          },
+          url: "user/reload",
           headers: {
             token: sessionStorage.getItem("token"),
+            email: sessionStorage.getItem("email"),
           },
         });
         commit("setToken", sessionStorage.getItem("token"));
@@ -168,41 +169,48 @@ export default createStore({
 
     async updateNote({ state, commit, dispatch }, updatedNote) {
       commit("setUpdateError", false);
-      try {
-        let updateNote = await axios({
-          method: "put",
-          url: "https://conotesbackend.herokuapp.com/api/notes/updateNote",
-          data: {
-            noteId: updatedNote._id,
-            email: state.email,
-            title: updatedNote.title,
-            content: updatedNote.content,
-            favourite: updatedNote.favourite,
-          },
-          headers: {
-            token: state.jsonToken,
-          },
-        });
-        await dispatch("fetchNotes");
-        router.push("/notes");
-      } catch (error) {
-        commit("setUpdateError", true);
-        console.log(error);
+      console.log(updatedNote);
+      if (updatedNote.content.length == 0) {
+        commit("setCreateContentRequired", true);
+      } else if (updatedNote.content.length > 0) {
+        try {
+          let updateNote = await axios({
+            method: "put",
+            url: "notes/updateNote",
+            data: {
+              title: updatedNote.title,
+              content: updatedNote.content,
+              favourite: updatedNote.favourite,
+            },
+            headers: {
+              email: state.email,
+              token: state.jsonToken,
+              noteid: updatedNote._id,
+            },
+          });
+          console.log(updateNote);
+          await dispatch("fetchNotes");
+          commit("setCreateContentRequired", false);
+          router.push("/notes");
+        } catch (error) {
+          commit("setUpdateError", true);
+          console.log(error);
+        }
       }
     },
     async deleteNote({ commit, state, dispatch }, deletedNote) {
       try {
+        console.log(deletedNote._id);
         let deleteNote = await axios({
-          method: "put",
-          url: "https://conotesbackend.herokuapp.com/api/notes/deleteNote",
-          data: {
+          method: "delete",
+          url: "notes/deleteNote",
+          headers: {
+            token: state.jsonToken,
             noteId: deletedNote._id,
             email: state.email,
           },
-          headers: {
-            token: state.jsonToken,
-          },
         });
+        console.log(deleteNote);
         await dispatch("fetchNotes");
         router.push("/notes");
       } catch (error) {
@@ -218,14 +226,14 @@ export default createStore({
         try {
           let createdNote = await axios({
             method: "post",
-            url: "https://conotesbackend.herokuapp.com/api/notes/createNote",
+            url: "notes/createNote",
             data: {
-              email: state.email,
               title: newNote.title,
               content: newNote.content,
               favourite: newNote.favourite,
             },
             headers: {
+              email: state.email,
               token: state.jsonToken,
             },
           });

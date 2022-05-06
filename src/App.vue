@@ -6,6 +6,8 @@
   import { ref, onMounted } from "vue";
   import { useStore } from "vuex";
   import router from "@/router";
+  console.log(process.env.VUE_APP_ROOT_API);
+
   const store = useStore();
   const loading = ref(true);
   onMounted(async () => {

@@ -12,8 +12,12 @@
       <textarea
         v-model="note.content"
         maxlength="400"
+        :class="{ createContentRequired: createContentRequired }"
         class="createContentBox"
       ></textarea>
+      <div class="createContentRequiredText" v-if="createContentRequired">
+        Content is required to update a note!
+      </div>
       <div class="createFavouriteContainer">
         <h4>Favourite</h4>
         <input type="checkbox" v-model="note.favourite" />
@@ -29,8 +33,16 @@
 <script setup>
   import axios from "axios";
   import { useRoute } from "vue-router";
-  import { ref, computed } from "vue";
+  import { ref, computed, onUnmounted } from "vue";
   import { useStore } from "vuex";
+  onUnmounted(() => {
+    store.commit("setCreateContentRequired", false);
+  });
+
+  const createContentRequired = computed(() => {
+    return store.getters.getContentRequire;
+  });
+
   const updateNoteError = computed(() => {
     return store.state.updateNoteError;
   });
@@ -39,13 +51,15 @@
   });
   const store = useStore();
   const router = useRoute();
-  const note = ref(store.getters.findNote(router.params.id));
-
+  const note = JSON.parse(
+    JSON.stringify(store.getters.findNote(router.params.id))
+  );
+  console.log(note);
   function updateNote() {
-    store.dispatch("updateNote", note.value);
+    store.dispatch("updateNote", note);
   }
   function deleteNote() {
-    store.dispatch("deleteNote", note.value);
+    store.dispatch("deleteNote", note);
   }
 </script>
 

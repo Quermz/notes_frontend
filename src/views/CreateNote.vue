@@ -35,8 +35,12 @@
 </template>
 
 <script setup>
-  import { ref, computed } from "vue";
+  import { ref, computed, onUnmounted } from "vue";
   import { useStore } from "vuex";
+  onUnmounted(() => {
+    store.commit("setCreateContentRequired", false);
+  });
+
   const createContentRequired = computed(() => {
     return store.state.createContentRequired;
   });

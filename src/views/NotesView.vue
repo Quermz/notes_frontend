@@ -5,12 +5,13 @@
       <div>{{ store.state.email }}</div>
       <button @click="logout" class="logoutButton">Log Out</button>
     </div>
-    <div class="noNotes" v-if="noNotes">
-      You currently have no notes. To get started press the add symbol.
-    </div>
+
     <router-link to="/createNote" class="noteContainer">
       <i class="fa-solid fa-circle-plus"></i>
     </router-link>
+    <div class="noNotes" v-if="noNotes">
+      You currently have no notes. To get started press the add symbol.
+    </div>
     <div class="outerGridContainer">
       <div class="gridContainer">
         <div
@@ -70,6 +71,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
   }
 
   .header {
@@ -92,14 +94,16 @@
   .logoutButton:hover {
     cursor: pointer;
   }
-  .noteContainer {
-    border-radius: 1rem;
-    justify-content: center;
+
+  /* {
     position: fixed;
     bottom: 0%;
     right: 0%;
-    margin-bottom: 1rem;
-    margin-right: 1rem;
+  } */
+
+  .noteContainer {
+    border-radius: 1rem;
+    justify-content: center;
     display: flex;
     align-items: center;
     transition: all 0.25s ease;
