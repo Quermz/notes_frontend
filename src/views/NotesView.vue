@@ -71,7 +71,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
   }
 
   .header {
@@ -126,7 +126,7 @@
   }
   .gridContainer {
     margin: auto;
-    padding: 1rem 2rem 2rem 2rem;
+    padding: 0rem 2rem 2rem 2rem;
     max-width: 1400px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
